@@ -7,8 +7,8 @@ import time
 import threading
 
 email_update_interval = 600 # sends an email only once in this time interval
-video_camera = VideoCamera(flip=True) # creates a camera object, flip vertically
-object_classifier = cv2.CascadeClassifier("models/fullbody_recognition_model.xml") # an opencv classifier
+video_camera = VideoCamera(flip=False) # creates a camera object, flip vertically
+object_classifier = cv2.CascadeClassifier("models/upperbody_recognition_model.xml") # an opencv classifier
 
 # App Globals (do not edit)
 app = Flask(__name__)
@@ -46,4 +46,4 @@ if __name__ == '__main__':
     t = threading.Thread(target=check_for_objects, args=())
     t.daemon = True
     t.start()
-    app.run(host='0.0.0.0', debug=False)
+    app.run(host='0.0.0.0', debug=False, threaded=True)
