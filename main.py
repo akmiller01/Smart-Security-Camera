@@ -15,7 +15,7 @@ if lt.is_night():
 	mode = " (night mode)"
 	em = "night"
 else:
-	fr = 8
+	fr = 32
 	speed = 0
 	mode = " (day mode)"
 	em = "auto"
@@ -24,7 +24,7 @@ video_camera.shutter_speed(speed)
 video_camera.hflip()
 video_camera.vflip()
 video_camera.exposure_mode(em)
-object_classifier = cv2.CascadeClassifier("models/fullbody_recognition_model.xml") # an opencv classifier
+# object_classifier = cv2.CascadeClassifier("models/fullbody_recognition_model.xml") # an opencv classifier
 
 # App Globals (do not edit)
 app = Flask(__name__)
@@ -33,15 +33,16 @@ last_epoch = 0
 def check_for_objects():
 	global last_epoch
 	while True:
-		try:
-			frame, found_obj = video_camera.get_object(object_classifier)
-			if found_obj and (time.time() - last_epoch) > email_update_interval:
-				last_epoch = time.time()
-				print "Sending email..."
-				sendEmail(frame)
-				print "done!"
-		except:
-			print "Error sending email: ", sys.exc_info()[0]
+		pass
+#		try:
+#			frame, found_obj = video_camera.get_object(object_classifier)
+#			if found_obj and (time.time() - last_epoch) > email_update_interval:
+#				last_epoch = time.time()
+#				print "Sending email..."
+#				# sendEmail(frame)
+#				print "done!"
+#		except:
+#			print "Error sending email: ", sys.exc_info()[0]
 
 @app.route('/')
 def index():

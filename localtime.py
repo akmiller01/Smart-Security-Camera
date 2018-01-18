@@ -15,16 +15,16 @@ class LocalTime(object):
         current_datetime = datetime.now(tz=pytz.utc)
         sun = self.city.sun(date=current_datetime.date(),local=False)
         return sun['sunrise']
-    def sunset(self):
+    def dusk(self):
         current_datetime = datetime.now(tz=pytz.utc)
         sun = self.city.sun(date=current_datetime.date(),local=False)
-        return sun['sunset']
+        return sun['dusk']
     def is_night(self):
         current_datetime = datetime.now(tz=pytz.utc)
         sun = self.city.sun(date=current_datetime.date(),local=False)
         sunrise = sun['sunrise']
-        sunset = sun['sunset']
-        if current_datetime < sunrise or current_datetime > sunset:
+        dusk = sun['dusk']
+        if current_datetime < sunrise or current_datetime > dusk:
             return True
         else:
             return False
