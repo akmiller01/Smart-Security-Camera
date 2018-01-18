@@ -5,23 +5,25 @@ from flask import Flask, render_template, Response
 from camera import VideoCamera
 import time
 import threading
-from dawndusk import *
+from localtime import LocalTime
 
 email_update_interval = 600 # sends an email only once in this time interval
-# if is_night:
-# 	fr = 1
-# 	speed = 1000000
-# 	mode = " (night mode)"
-# else:
-#	fr = 8
-#	speed = 250000
-#	mode = " (day mode)"
-fr = 8
-speed = 0
-mode = " (day mode)"
-video_camera = VideoCamera(flip=True,resolution=(640,480),framerate=fr) # creates a camera object, flip vertically
+lt = LocalTime('Baltimore')
+if lt.is_night():
+	fr = 1
+	speed = 1000000
+	mode = " (night mode)"
+	em = "night"
+else:
+	fr = 8
+	speed = 0
+	mode = " (day mode)"
+	em = "auto"
+video_camera = VideoCamera(resolution=(640,480),framerate=fr) # creates a camera object, flip vertically
 video_camera.shutter_speed(speed)
-# video_camera.reset_resolution_framerate((320,240),16)
+video_camera.hflip()
+video_camera.vflip()
+video_camera.exposure_mode(em)
 object_classifier = cv2.CascadeClassifier("models/fullbody_recognition_model.xml") # an opencv classifier
 
 # App Globals (do not edit)

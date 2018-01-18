@@ -2,16 +2,23 @@ import cv2
 from pivideostream import PiVideoStream
 import imutils
 import time
-import numpy as np
 
 class VideoCamera(object):
-    def __init__(self, flip = False, resolution=(320,240), framerate=32):
+    def __init__(self, resolution=(320,240), framerate=32):
         self.vs = PiVideoStream(resolution,framerate).start()
-        self.flip = flip
         time.sleep(2.0)
+        
+    def hflip(self,hflip=True):
+        self.vs.hflip(hflip)
+        
+    def vflip(self,vflip=True):
+        self.vs.vflip(vflip)
+        
+    def exposure_mode(self,exposure_mode="auto"):
+        self.vs.exposure_mode(exposure_mode)
 
     def shutter_speed(self,speed):
-	self.vs.shutter_speed(speed)
+        self.vs.shutter_speed(speed)
 
     def reset_resolution_framerate(self,resolution=(320,240),framerate=32):
         self.vs.stop()
@@ -23,19 +30,14 @@ class VideoCamera(object):
     def __del__(self):
         self.vs.stop()
 
-    def flip_if_needed(self, frame):
-        if self.flip:
-            return np.flip(frame, 0)
-        return frame
-
     def get_frame(self):
-        frame = self.flip_if_needed(self.vs.read())
+        frame = self.vs.read()
         ret, jpeg = cv2.imencode('.jpg', frame)
         return jpeg.tobytes()
 
     def get_object(self, classifier):
         found_objects = False
-        frame = self.flip_if_needed(self.vs.read()).copy() 
+        frame = self.vs.read().copy() 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         objects = classifier.detectMultiScale(

@@ -18,6 +18,15 @@ class PiVideoStream:
 		# if the thread should be stopped
 		self.frame = None
 		self.stopped = False
+		
+	def hflip(self,hflip=True):
+		self.camera.hflip = hflip
+		
+	def vflip(self,vflip=True):
+		self.camera.vflip = vflip
+		
+	def exposure_mode(self,exposure_mode="auto"):
+		self.camera.exposure_mode = exposure_mode
 
 	def shutter_speed(self,speed):
 		if speed<=(1/self.camera.framerate)*1000000:
