@@ -37,7 +37,9 @@ class VideoCamera(object):
 
     def get_object(self, classifier):
         found_objects = False
-        frame = self.vs.read().copy() 
+        frame = self.vs.read().copy()
+        if frame is None:
+            return (None, False)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         objects = classifier.detectMultiScale(
