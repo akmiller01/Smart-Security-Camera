@@ -8,12 +8,19 @@ import threading
 from dawndusk import *
 
 email_update_interval = 600 # sends an email only once in this time interval
-if is_night:
-	fr = 1
-else:
-	fr = 8
+# if is_night:
+# 	fr = 1
+# 	speed = 1000000
+# 	mode = " (night mode)"
+# else:
+#	fr = 8
+#	speed = 250000
+#	mode = " (day mode)"
+fr = 8
+speed = 0
+mode = " (day mode)"
 video_camera = VideoCamera(flip=True,resolution=(640,480),framerate=fr) # creates a camera object, flip vertically
-video_camera.shutter_speed((1/fr)*1000000)
+video_camera.shutter_speed(speed)
 # video_camera.reset_resolution_framerate((320,240),16)
 object_classifier = cv2.CascadeClassifier("models/fullbody_recognition_model.xml") # an opencv classifier
 
@@ -36,7 +43,7 @@ def check_for_objects():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html',mode=mode)
 
 def gen(camera):
     while True:
