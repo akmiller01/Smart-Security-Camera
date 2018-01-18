@@ -7,7 +7,9 @@ import time
 import threading
 
 email_update_interval = 600 # sends an email only once in this time interval
-video_camera = VideoCamera(flip=False) # creates a camera object, flip vertically
+video_camera = VideoCamera(flip=True,resolution=(640,480),framerate=1) # creates a camera object, flip vertically
+video_camera.shutter_speed(1000000)
+# video_camera.reset_resolution_framerate((320,240),16)
 object_classifier = cv2.CascadeClassifier("models/upperbody_recognition_model.xml") # an opencv classifier
 
 # App Globals (do not edit)
