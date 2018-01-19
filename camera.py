@@ -42,10 +42,7 @@ class VideoCamera(object):
         self.vs.stop()
 
     def get_frame(self):
-        preframe = self.vs.read()
-        if preframe is None:
-                return None
-        frame = preframe.copy()
+        frame = self.vs.read().copy()
         # draw the text and timestamp on the frame
         timestamp = self.lt.now()
         ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
@@ -55,10 +52,7 @@ class VideoCamera(object):
         return jpeg.tobytes()
 
     def get_object(self):
-        preframe = self.vs.read()
-        if preframe is None:
-            return (None, False)
-        frame = preframe.copy()
+        frame = self.vs.read().copy()
         timestamp = self.lt.now()
         found_obj = False
         
