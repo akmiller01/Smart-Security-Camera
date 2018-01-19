@@ -62,8 +62,7 @@ class VideoCamera(object):
         if self.avg is None:
             print("[INFO] starting background model...")
             self.avg = gray.copy().astype("float")
-            ret, jpeg = cv2.imencode('.jpg', frame)
-            return (jpeg.tobytes(), found_obj)
+            return (None, False)
         
         cv2.accumulateWeighted(gray,self.avg,0.5)
         frameDelta = cv2.absdiff(gray,cv2.convertScaleAbs(self.avg))
@@ -77,7 +76,7 @@ class VideoCamera(object):
         
         # loop over the contours
         for c in cnts:
-            print("Found contours...")
+            print("[INFO] found contours...")
             # if the contour is too small, ignore it
             if cv2.contourArea(c) < self.conf["min_area"]:
                 print("Contours too small...")
@@ -91,27 +90,24 @@ class VideoCamera(object):
         
         # check to see if the room is occupied
         if found_obj:
-            print("Found object!")
+            print("[INFO] found object!")
             # increment the motion counter
             self.motionCounter += 1
 
             # check to see if the number of frames with consistent motion is
             # high enough
             if self.motionCounter >= self.conf["min_motion_frames"]:
-                print("Occupied!")
+                print("[INFO] occupied!")
                 self.status = "Occupied"
-                ret, jpeg = cv2.imencode('.jpg', frame)
-                return (jpeg.tobytes(), True)
-
-                # update the last uploaded timestamp and reset the motion
-                # counter
                 self.motionCounter = 0
+                return (jpeg.tobytes(), found_obj)
+            
+            return (None, False)
 
         # otherwise, the room is not occupied
         else:
             self.motionCounter = 0
             self.status = "Unoccupied"
-            ret, jpeg = cv2.imencode('.jpg', frame)
-            return (jpeg.tobytes(), False)
+            return (None, False)
 
 
