@@ -3,12 +3,12 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 from threading import Thread
 import cv2
-from numpy import zeroes
+from numpy import zeros
 
 class PiVideoStream:
 	def __init__(self, resolution=(320, 240), framerate=32):
 		# initialize the camera and stream
-		self.resolution = resolution
+		self.frame = zeros(resolution)
 		self.camera = PiCamera()
 		self.camera.resolution = resolution
 		self.camera.framerate = framerate
@@ -63,11 +63,8 @@ class PiVideoStream:
 				return
 
 	def read(self):
-		# return the frame most recently read
-		try:
-			return self.frame
-		except NameError:
-			return zeroes(self.resolution)
+		# return the frame most recent
+		return self.frame
 
 	def stop(self):
 		# indicate that the thread should be stopped
