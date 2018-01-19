@@ -25,7 +25,7 @@ camera_settings = {
         }
 }
 lt = LocalTime('Baltimore')
-current_state = "day"
+current_state = lt.current_state()
 camera_mode = camera_settings[current_state]
 video_camera = VideoCamera(resolution=(640,480),framerate=camera_mode["fr"]) # creates a camera object, flip vertically
 video_camera.shutter_speed(camera_mode["speed"])
@@ -55,7 +55,6 @@ def check_for_objects():
         global current_state
         global video_camera
         while True:
-                print(current_state)
                 #Add time checker in this thread
                 future_state = lt.current_state()
                 current_state = check_camera_mode(video_camera,current_state, future_state)
