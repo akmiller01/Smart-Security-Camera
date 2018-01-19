@@ -4,6 +4,7 @@ import imutils
 import time
 import json
 from localtime import LocalTime
+import numpy as np
 
 class VideoCamera(object):
     def __init__(self, resolution=(320,240), framerate=32):
@@ -13,7 +14,7 @@ class VideoCamera(object):
         self.motionCounter = 0
         self.status = "Unoccupied"
         self.vs = PiVideoStream(resolution,framerate).start()
-        time.sleep(self.conf["camera_initial_warmup_time"])
+        time.sleep(self.conf["camera_warmup_time"])
         
     def hflip(self,hflip=True):
         self.vs.hflip(hflip)
@@ -37,7 +38,7 @@ class VideoCamera(object):
         self.vs.camera.framerate = framerate
         self.vs.shutter_speed(0)
         self.vs.start()
-        time.sleep(self.conf["camera_subsequent_warmup_time"])
+        time.sleep(self.conf["camera_warmup_time"])
 
     def __del__(self):
         self.vs.stop(stop_camera=True)
@@ -64,7 +65,11 @@ class VideoCamera(object):
         
         if self.avg is None:
             print("[INFO] starting background model...")
-            self.avg = gray.copy().astype("float")
+            #Don't average on a black frame
+            if np.array_equal(frame,self.vs.blank_frame):
+                print("[INFO] Blank frame, skipping...")
+            else:
+                self.avg = gray.copy().astype("float")
             return (None, False)
         
         cv2.accumulateWeighted(gray,self.avg,0.5)

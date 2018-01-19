@@ -1,6 +1,5 @@
 {
-    "camera_initial_warmup_time": 10.0,
-    "camera_subsequent_warmup_time":2.0,
+    "camera_warmup_time": 2.5,
     "camera_cooldown_time": 1.0,
     "min_motion_frames": 4,
     "delta_thresh": 5,
