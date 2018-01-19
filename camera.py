@@ -53,6 +53,7 @@ class VideoCamera(object):
     def get_object(self):
         frame = self.vs.read().copy()
         timestamp = self.lt.now()
+        ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
         found_obj = False
         
         frame = imutils.resize(frame,width=500)
@@ -98,6 +99,9 @@ class VideoCamera(object):
                 print("[INFO] occupied!")
                 self.status = "Occupied"
                 self.motionCounter = 0
+                cv2.putText(frame, "Area Status: {}".format(self.status), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                cv2.putText(frame, ts, (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,0.35, (0, 0, 255), 1)
+                ret, jpeg = cv2.imencode('.jpg', frame)
                 return (jpeg.tobytes(), found_obj)
             
             return (None, False)
