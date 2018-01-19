@@ -34,8 +34,8 @@ class LocalTime(object):
         dawn = sun['dawn']
         dusk = sun['dusk']
         if current_datetime < dawn or current_datetime > dusk:
-            return "day"
-        else:
             return "night"
+        else:
+            return "day"
 
 
