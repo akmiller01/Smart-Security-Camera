@@ -65,11 +65,7 @@ class VideoCamera(object):
         
         if self.avg is None:
             print("[INFO] starting background model...")
-            #Don't average on a black frame
-            if np.array_equal(frame,self.vs.blank_frame):
-                print("[INFO] Blank frame, skipping...")
-            else:
-                self.avg = gray.copy().astype("float")
+            self.avg = gray.copy().astype("float")
             return (None, False)
         
         cv2.accumulateWeighted(gray,self.avg,0.5)
