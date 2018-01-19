@@ -10,7 +10,6 @@ class VideoCamera(object):
         self.conf = json.load(open("conf.json"))
         self.lt = LocalTime("Baltimore")
         self.avg = None
-        self.lastUploaded = self.lt.now()
         self.motionCounter = 0
         self.status = "Unoccupied"
         self.vs = PiVideoStream(resolution,framerate).start()
@@ -63,7 +62,8 @@ class VideoCamera(object):
         if self.avg is None:
             print("[INFO] starting background model...")
             self.avg = gray.copy().astype("float")
-            return (None, False)
+            ret, jpeg = cv2.imencode('.jpg', frame)
+            return (jpeg.tobytes(), found_obj)
         
         cv2.accumulateWeighted(gray,self.avg,0.5)
         frameDelta = cv2.absdiff(gray,cv2.convertScaleAbs(self.avg))
@@ -77,8 +77,10 @@ class VideoCamera(object):
         
         # loop over the contours
         for c in cnts:
+            print("Found contours...")
             # if the contour is too small, ignore it
             if cv2.contourArea(c) < self.conf["min_area"]:
+                print("Contours too small...")
                 continue
 
             # compute the bounding box for the contour, draw it on the frame,
@@ -89,22 +91,21 @@ class VideoCamera(object):
         
         # check to see if the room is occupied
         if found_obj:
-            # check to see if enough time has passed between uploads
-            if (timestamp - self.lastUploaded).seconds >= self.conf["min_upload_seconds"]:
-                # increment the motion counter
-                self.motionCounter += 1
+            print("Found object!")
+            # increment the motion counter
+            self.motionCounter += 1
 
-                # check to see if the number of frames with consistent motion is
-                # high enough
-                if self.motionCounter >= self.conf["min_motion_frames"]:
-                    self.status = "Occupied"
-                    ret, jpeg = cv2.imencode('.jpg', frame)
-                    return (jpeg.tobytes(), True)
+            # check to see if the number of frames with consistent motion is
+            # high enough
+            if self.motionCounter >= self.conf["min_motion_frames"]:
+                print("Occupied!")
+                self.status = "Occupied"
+                ret, jpeg = cv2.imencode('.jpg', frame)
+                return (jpeg.tobytes(), True)
 
-                    # update the last uploaded timestamp and reset the motion
-                    # counter
-                    self.lastUploaded = timestamp
-                    self.motionCounter = 0
+                # update the last uploaded timestamp and reset the motion
+                # counter
+                self.motionCounter = 0
 
         # otherwise, the room is not occupied
         else:

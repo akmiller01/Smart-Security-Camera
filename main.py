@@ -10,7 +10,7 @@ from localtime import LocalTime
 email_update_interval = 600 # sends an email only once in this time interval
 lt = LocalTime('Baltimore')
 if lt.is_night():
-        fr = 8
+        fr = 1
         speed = (1/fr)*1000000
         mode = " (night mode)"
         ex = "night"
