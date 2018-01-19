@@ -3,12 +3,12 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 from threading import Thread
 import cv2
-from numpy import zeros
+import numpy as np
 
 class PiVideoStream:
 	def __init__(self, resolution=(320, 240), framerate=32):
 		# initialize the camera and stream
-		self.frame = zeros(resolution)
+		self.frame = np.zeros((resolution[1],resolution[0],3), np.uint8)
 		self.camera = PiCamera()
 		self.camera.resolution = resolution
 		self.camera.framerate = framerate
