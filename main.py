@@ -8,46 +8,68 @@ import threading
 from localtime import LocalTime
 
 email_update_interval = 600 # sends an email only once in this time interval
+camera_settings = {
+        "night":{
+                "fr":1,
+                "speed":1000000,
+                "mode":" (night mode)",
+                "ex":"night",
+                "iso":800
+        },
+        "day":{
+                "fr":16,
+                "speed":0,
+                "mode":" (day mode)",
+                "ex":"auto",
+                "iso":0
+        }
+}
 lt = LocalTime('Baltimore')
-if lt.is_night():
-        fr = 1
-        speed = (1/fr)*1000000
-        mode = " (night mode)"
-        ex = "night"
-        iso = 800
-else:
-        fr = 16
-        speed = 0
-        mode = " (day mode)"
-        ex = "auto"
-        iso = 0
-video_camera = VideoCamera(resolution=(640,480),framerate=fr) # creates a camera object, flip vertically
-video_camera.shutter_speed(speed)
+current_state = lt.current_state()
+camera_mode = camera_settings[current_state]
+video_camera = VideoCamera(resolution=(640,480),framerate=camera_mode["fr"]) # creates a camera object, flip vertically
+video_camera.shutter_speed(camera_mode["speed"])
 video_camera.hflip()
 video_camera.vflip()
-#video_camera.exposure_mode(ex)
-video_camera.iso(iso)
+video_camera.iso(camera_mode["iso"])
 
 # App Globals (do not edit)
 app = Flask(__name__)
 last_epoch = 0
 
+def set_camera_mode(cm):
+        global video_camera
+        video_camera.change_framerate(cm["fr"])
+        video_camera.shutter_speed(cm["speed"])
+        video_camera.iso(cm["iso"])
+
+def check_camera_mode(future_state):
+        global current_state
+        global camera_mode
+        if current_state != future_state:
+                current_state = future_state
+                camera_mode = camera_settings[current_state]
+                set_camera_mode(camera_mode)
+                
 def check_for_objects():
         global last_epoch
         while True:
-                #try:
-                frame, found_obj = video_camera.get_object()
-                if found_obj==True and (time.time() - last_epoch) > email_update_interval:
-                        last_epoch = time.time()
-                        print "[INFO] Sending email..."
-                        sendEmail(frame)
-                        print "[INFO] done!"
-                #except:
-                        #print "Error sending email: ", sys.exc_info()[0]
+                #Add time checker in this thread
+                future_state = lt.current_state()
+                check_camera_mode(future_state)
+                try:
+                        frame, found_obj = video_camera.get_object()
+                        if found_obj==True and (time.time() - last_epoch) > email_update_interval:
+                                last_epoch = time.time()
+                                print "[INFO] Sending email..."
+                                sendEmail(frame)
+                                print "[INFO] done!"
+                except:
+                        print "Error sending email: ", sys.exc_info()[0]
 
 @app.route('/')
 def index():
-    return render_template('index.html',mode=mode)
+    return render_template('index.html',mode=camera_mode["mode"])
 
 def gen(camera):
     while True:

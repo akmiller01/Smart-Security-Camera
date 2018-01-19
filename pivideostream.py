@@ -18,7 +18,8 @@ class PiVideoStream:
 
 		# initialize the variable used to indicate
 		# if the thread should be stopped
-		self.stopped = False
+		self.stream_stopped = False
+		self.camera_stopped = False
 		
 	def hflip(self,hflip=True):
 		self.camera.hflip = hflip
@@ -39,6 +40,8 @@ class PiVideoStream:
 			self.camera.shutter_speed = (1/self.camera.framerate)*1000000
 		
 	def start(self):
+		self.stream_stopped = False
+		self.camera_stopped = False
 		# start the thread to read frames from the video stream
 		t = Thread(target=self.update, args=())
 		t.daemon = True
@@ -55,16 +58,18 @@ class PiVideoStream:
 
 			# if the thread indicator variable is set, stop the thread
 			# and resource camera resources
-			if self.stopped:
+			if self.stream_stopped:
 				self.stream.close()
 				self.rawCapture.close()
-				self.camera.close()
+				if self.camera_stopped:
+					self.camera.close()
 				return
 
 	def read(self):
 		# return the frame most recent
 		return self.frame
 
-	def stop(self):
-		# indicate that the thread should be stopped
-		self.stopped = True
+	def stop(self,stop_camera=False):
+		# indicate that the stream should be stopped
+		self.stream_stopped = True
+		self.camera_stopped = stop_camera

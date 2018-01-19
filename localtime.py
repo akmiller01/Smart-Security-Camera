@@ -11,10 +11,10 @@ class LocalTime(object):
         return datetime.now(tz=pytz.utc)
     def now(self):
         return datetime.now(tz=self.city.tz)
-    def sunrise(self):
+    def dawn(self):
         current_datetime = datetime.now(tz=pytz.utc)
         sun = self.city.sun(date=current_datetime.date(),local=False)
-        return sun['sunrise']
+        return sun['dawn']
     def dusk(self):
         current_datetime = datetime.now(tz=pytz.utc)
         sun = self.city.sun(date=current_datetime.date(),local=False)
@@ -22,11 +22,20 @@ class LocalTime(object):
     def is_night(self):
         current_datetime = datetime.now(tz=pytz.utc)
         sun = self.city.sun(date=current_datetime.date(),local=False)
-        sunrise = sun['sunrise']
+        dawn = sun['dawn']
         dusk = sun['dusk']
-        if current_datetime < sunrise or current_datetime > dusk:
+        if current_datetime < dawn or current_datetime > dusk:
             return True
         else:
             return False
+    def current_state(self):
+        current_datetime = datetime.now(tz=pytz.utc)
+        sun = self.city.sun(date=current_datetime.date(),local=False)
+        dawn = sun['dawn']
+        dusk = sun['dusk']
+        if current_datetime < dawn or current_datetime > dusk:
+            return "day"
+        else:
+            return "night"
 
 

@@ -30,15 +30,17 @@ class VideoCamera(object):
     def shutter_speed(self,speed):
         self.vs.shutter_speed(speed)
 
-    def reset_resolution_framerate(self,resolution=(320,240),framerate=32):
-        self.vs.stop()
-        time.sleep(1.0)
-        self.vs = PiVideoStream(resolution,framerate).start()
-        self.vs.shutter_speed((1/framerate)*1000000)
-        time.sleep(1.0)
+    def change_framerate(self,framerate=32):
+        previous_framerate = self.vs.camera.framerate
+        self.vs.stop(stop_camera=False)
+        time.sleep((1/previous_framerate))
+        self.vs.camera.framerate = framerate
+        self.vs.shutter_speed(0)
+        self.vs.start()
+        time.sleep(1/framerate)
 
     def __del__(self):
-        self.vs.stop()
+        self.vs.stop(stop_camera=True)
 
     def get_frame(self):
         frame = self.vs.read().copy()
