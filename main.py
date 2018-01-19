@@ -13,17 +13,17 @@ if lt.is_night():
         fr = 2
         speed = 500000
         mode = " (night mode)"
-        iso = 800
+        ex = "night"
 else:
         fr = 16
         speed = 0
         mode = " (day mode)"
-        iso = 0
+        ex = "auto"
 video_camera = VideoCamera(resolution=(640,480),framerate=fr) # creates a camera object, flip vertically
 video_camera.shutter_speed(speed)
 video_camera.hflip()
 video_camera.vflip()
-video_camera.iso(iso)
+video_camera.exposure_mode(ex)
 
 # App Globals (do not edit)
 app = Flask(__name__)
