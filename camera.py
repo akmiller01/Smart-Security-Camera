@@ -76,10 +76,8 @@ class VideoCamera(object):
         
         # loop over the contours
         for c in cnts:
-            print("[INFO] found contours...")
             # if the contour is too small, ignore it
             if cv2.contourArea(c) < self.conf["min_area"]:
-                print("Contours too small...")
                 continue
 
             # compute the bounding box for the contour, draw it on the frame,

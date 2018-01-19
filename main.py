@@ -14,16 +14,19 @@ if lt.is_night():
         speed = (1/fr)*1000000
         mode = " (night mode)"
         ex = "night"
+        iso = 800
 else:
         fr = 16
         speed = 0
         mode = " (day mode)"
         ex = "auto"
+        iso = 0
 video_camera = VideoCamera(resolution=(640,480),framerate=fr) # creates a camera object, flip vertically
 video_camera.shutter_speed(speed)
 video_camera.hflip()
 video_camera.vflip()
-video_camera.exposure_mode(ex)
+#video_camera.exposure_mode(ex)
+video_camera.iso(iso)
 
 # App Globals (do not edit)
 app = Flask(__name__)
@@ -36,9 +39,9 @@ def check_for_objects():
                 frame, found_obj = video_camera.get_object()
                 if found_obj==True and (time.time() - last_epoch) > email_update_interval:
                         last_epoch = time.time()
-                        print "Sending email..."
-                        # sendEmail(frame)
-                        print "done!"
+                        print "[INFO] Sending email..."
+                        sendEmail(frame)
+                        print "[INFO] done!"
                 #except:
                         #print "Error sending email: ", sys.exc_info()[0]
 
