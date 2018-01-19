@@ -64,7 +64,6 @@ class VideoCamera(object):
         timestamp = self.lt.now()
         ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
         found_obj = False
-        (self.x, self.y, self.w, self.h) = (0,0,0,0)
         
         frame = imutils.resize(frame,width=500)
         gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
@@ -118,6 +117,7 @@ class VideoCamera(object):
 
         # otherwise, the room is not occupied
         else:
+            (self.x, self.y, self.w, self.h) = (0,0,0,0)
             self.motionCounter = 0
             self.status = "Unoccupied"
             return (None, False)
