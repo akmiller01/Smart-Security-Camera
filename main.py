@@ -34,7 +34,9 @@ def check_for_objects():
         while True:
                 #try:
                 frame, found_obj = video_camera.get_object()
-                if found_obj and (time.time() - last_epoch) > email_update_interval:
+                if frame is None:
+                        continue
+                if found_obj==True and (time.time() - last_epoch) > email_update_interval:
                         last_epoch = time.time()
                         print "Sending email..."
                         # sendEmail(frame)

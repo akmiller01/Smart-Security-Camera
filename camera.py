@@ -7,7 +7,7 @@ from localtime import LocalTime
 
 class VideoCamera(object):
     def __init__(self, resolution=(320,240), framerate=32):
-        self.conf = json.load("conf.json")
+        self.conf = json.load(open("conf.json"))
         self.lt = LocalTime("Baltimore")
         self.avg = None
         self.lastUploaded = self.lt.now()
@@ -49,25 +49,24 @@ class VideoCamera(object):
         return jpeg.tobytes()
 
     def get_object(self):
-        found_objects = False
         preframe = self.vs.read()
         if preframe is None:
             return (None, False)
-        frame = preframe.copy().array
+        frame = preframe.copy()
         timestamp = self.lt.now()
         text = "Unoccupied"
         
         frame = imutils.resize(frame,width=500)
         gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-        gray = cv2.GausianBlur(gray,(21,21),0)
+        gray = cv2.GaussianBlur(gray,(21,21),0)
         
         if self.avg is None:
             print("[INFO] starting background model...")
-            avg = gray.copy().astype("float")
+            self.avg = gray.copy().astype("float")
             return (None, False)
         
-        cv2.accumulateWeighted(gray,avg,0.5)
-        frameDelta = cv2.absdiff(gray,cv2.convertScaleAbs(avg))
+        cv2.accumulateWeighted(gray,self.avg,0.5)
+        frameDelta = cv2.absdiff(gray,cv2.convertScaleAbs(self.avg))
         
         # threshold the delta image, dilate the thresholded image to fill
         # in holes, then find contours on thresholded image
