@@ -1,0 +1,7 @@
+{
+    "camera_warmup_time": 2.5,
+    "min_upload_seconds": 3.0,
+    "min_motion_frames": 8,
+    "delta_thresh": 5,
+    "min_area": 5000
+}

@@ -27,6 +27,9 @@ class PiVideoStream:
 		
 	def exposure_mode(self,exposure_mode="auto"):
 		self.camera.exposure_mode = exposure_mode
+		
+	def iso(self,iso=0):
+		self.camera.iso = iso
 
 	def shutter_speed(self,speed):
 		if speed<=(1/self.camera.framerate)*1000000:

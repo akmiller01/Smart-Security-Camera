@@ -10,39 +10,37 @@ from localtime import LocalTime
 email_update_interval = 600 # sends an email only once in this time interval
 lt = LocalTime('Baltimore')
 if lt.is_night():
-	fr = 1
-	speed = (1/fr)*1000000
-	mode = " (night mode)"
-	em = "night"
+        fr = 2
+        speed = 500000
+        mode = " (night mode)"
+        iso = 800
 else:
-	fr = 16
-	speed = 0
-	mode = " (day mode)"
-	em = "auto"
+        fr = 16
+        speed = 0
+        mode = " (day mode)"
+        iso = 0
 video_camera = VideoCamera(resolution=(640,480),framerate=fr) # creates a camera object, flip vertically
 video_camera.shutter_speed(speed)
 video_camera.hflip()
 video_camera.vflip()
-video_camera.exposure_mode(em)
-# object_classifier = cv2.CascadeClassifier("models/fullbody_recognition_model.xml") # an opencv classifier
+video_camera.iso(iso)
 
 # App Globals (do not edit)
 app = Flask(__name__)
 last_epoch = 0
 
 def check_for_objects():
-	global last_epoch
-	while True:
-		pass
-#		try:
-#			frame, found_obj = video_camera.get_object(object_classifier)
-#			if found_obj and (time.time() - last_epoch) > email_update_interval:
-#				last_epoch = time.time()
-#				print "Sending email..."
-#				# sendEmail(frame)
-#				print "done!"
-#		except:
-#			print "Error sending email: ", sys.exc_info()[0]
+        global last_epoch
+        while True:
+                #try:
+                frame, found_obj = video_camera.get_object()
+                if found_obj and (time.time() - last_epoch) > email_update_interval:
+                        last_epoch = time.time()
+                        print "Sending email..."
+                        # sendEmail(frame)
+                        print "done!"
+                #except:
+                        #print "Error sending email: ", sys.exc_info()[0]
 
 @app.route('/')
 def index():
@@ -51,8 +49,8 @@ def index():
 def gen(camera):
     while True:
         frame = camera.get_frame()
-	if frame is None:
-		continue
+        if frame is None:
+                continue
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
