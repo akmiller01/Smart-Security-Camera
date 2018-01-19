@@ -13,6 +13,10 @@ class VideoCamera(object):
         self.avg = None
         self.motionCounter = 0
         self.status = "Unoccupied"
+        self.x = 0
+        self.y = 0
+        self.w = 0
+        self.h = 0
         self.vs = PiVideoStream(resolution,framerate).start()
         time.sleep(self.conf["camera_warmup_time"])
         
@@ -50,6 +54,8 @@ class VideoCamera(object):
         ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
         cv2.putText(frame, "Area Status: {}".format(self.status), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         cv2.putText(frame, ts, (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,0.35, (0, 0, 255), 1)
+        if self.w>0:
+            cv2.rectangle(frame, (self.x, self.y), (self.x + self.w, self.y + self.h), (0, 255, 0), 2)
         ret, jpeg = cv2.imencode('.jpg', frame)
         return jpeg.tobytes()
 
@@ -86,8 +92,8 @@ class VideoCamera(object):
 
             # compute the bounding box for the contour, draw it on the frame,
             # and update found_obj
-            (x, y, w, h) = cv2.boundingRect(c)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            (self.x, self.y, self.w, self.h) = cv2.boundingRect(c)
+            cv2.rectangle(frame, (self.x, self.y), (self.x + self.w, self.y + self.h), (0, 255, 0), 2)
             found_obj = True
         
         # check to see if the room is occupied
