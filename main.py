@@ -11,11 +11,11 @@ email_update_interval = 600 # sends an email only once in this time interval
 lt = LocalTime('Baltimore')
 if lt.is_night():
 	fr = 1
-	speed = 1000000
+	speed = (1/fr)*1000000
 	mode = " (night mode)"
 	em = "night"
 else:
-	fr = 32
+	fr = 16
 	speed = 0
 	mode = " (day mode)"
 	em = "auto"
@@ -51,6 +51,8 @@ def index():
 def gen(camera):
     while True:
         frame = camera.get_frame()
+	if frame is None:
+		continue
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
