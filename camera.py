@@ -13,7 +13,7 @@ class VideoCamera(object):
         self.motionCounter = 0
         self.status = "Unoccupied"
         self.vs = PiVideoStream(resolution,framerate).start()
-        time.sleep(self.conf["camera_warmup_time"])
+        time.sleep(self.conf["camera_initial_warmup_time"])
         
     def hflip(self,hflip=True):
         self.vs.hflip(hflip)
@@ -37,7 +37,7 @@ class VideoCamera(object):
         self.vs.camera.framerate = framerate
         self.vs.shutter_speed(0)
         self.vs.start()
-        time.sleep(self.conf["camera_warmup_time"])
+        time.sleep(self.conf["camera_subsequent_warmup_time"])
 
     def __del__(self):
         self.vs.stop(stop_camera=True)
