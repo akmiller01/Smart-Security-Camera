@@ -13,14 +13,12 @@ camera_settings = {
         "night":{
                 "fr":1,
                 "speed":1000000,
-                "mode":" (night mode)",
                 "ex":"night",
                 "iso":800
         },
         "day":{
                 "fr":16,
                 "speed":0,
-                "mode":" (day mode)",
                 "ex":"auto",
                 "iso":0
         }
@@ -86,7 +84,7 @@ def check_for_objects():
 
 @app.route('/')
 def index():
-    return render_template('index.html',mode=camera_mode["mode"])
+    return render_template('index.html')
 
 def gen(camera):
     while True:

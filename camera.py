@@ -50,10 +50,12 @@ class VideoCamera(object):
 
     def get_frame(self):
         frame = self.vs.read().copy()
+        framerate = self.vs.camera.framerate
         # draw the text and timestamp on the frame
         timestamp = self.lt.now()
         ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
         cv2.putText(frame, ts, (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,0.35, (0, 0, 255), 1)
+        cv2.putText(frame, "FPS: {}".format(framerate), (10, 20),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         if self.w>0:
             cv2.rectangle(frame, (self.x, self.y), (self.x + self.w, self.y + self.h), (0, 255, 0), 2)
         ret, jpeg = cv2.imencode('.jpg', frame)
