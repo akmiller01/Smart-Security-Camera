@@ -71,17 +71,10 @@ class VideoCamera(object):
         gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray,(21,21),0)
         
-        if self.avg is None:
+        if self.avg is None or self.avg_count < 30:
             print("[INFO] starting background model...")
             self.avg = gray.copy().astype("float")
             self.avg_count += 1
-            return (None, False)
-        
-        if self.avg_count < 30:
-            self.avg_count += 1
-            print(self.avg_count)
-            cv2.accumulateWeighted(gray,self.avg,0.5)
-            frameDelta = cv2.absdiff(gray,cv2.convertScaleAbs(self.avg))
             return (None, False)
         
         cv2.accumulateWeighted(gray,self.avg,0.5)
