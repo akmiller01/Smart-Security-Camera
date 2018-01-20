@@ -2,3 +2,4 @@ imutils
 flask
 picamera[array]
 astral
+miniupnpc

@@ -3,8 +3,14 @@ from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from email.MIMEImage import MIMEImage
 from localtime import LocalTime
+import miniupnpc
 
 lt = LocalTime("Baltimore")
+u = miniupnpc.UPnP()
+u.discoverdelay = 200;
+u.discover()
+u.selectigd()
+print 'external ip address:', u.externalipaddress()
 # Email you want to send the update from (only works with gmail)
 fromEmail = 'email@gmail.com'
 # You can generate an app password here to avoid storing your password in plain text
@@ -28,7 +34,7 @@ def sendEmail(image):
 	msgText = MIMEText('Smart security cam found object')
 	msgAlternative.attach(msgText)
 
-	msgText = MIMEText('<img src="cid:image1">', 'html')
+	msgText = MIMEText('<a href="{}:5000">Click here to live</a><img src="cid:image1">'.format(u.externalipaddress()), 'html')
 	msgAlternative.attach(msgText)
 
 	msgImage = MIMEImage(image)
