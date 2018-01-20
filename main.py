@@ -61,26 +61,26 @@ def check_for_objects():
                 #Add time checker in this thread
                 future_state = lt.current_state()
                 current_state = check_camera_mode(video_camera,current_state, future_state)
-                #try:
-		vis, found_obj = video_camera.get_object()
-		if found_obj==True:
-			if (time.time() - last_epoch) > email_update_interval:
-				last_epoch = time.time()
-				print "[INFO] sending email..."
-				ret, jpeg = cv2.imencode('.jpg', vis)
-				frame = jpeg.tobytes()
-				#sendEmail(frame)
-				print "[INFO] done!"
-			if (time.time() - last_save_epoch) > save_update_interval:
-				last_save_epoch = time.time()
-				print "[INFO] saving hardcopy..."
-				timestamp = lt.now()
-				ts = timestamp.strftime("%Y-%m-%d-%H-%M-%S")
-				filename = "/home/pi/Pictures/"+ts+".jpeg"
-				cv2.imwrite(vis,filename)
-				print "[INFO] done!"
-                #except:
-                        #print "Error sending email: ", sys.exc_info()[0]
+                try:
+                        vis, found_obj = video_camera.get_object()
+                        if found_obj==True:
+                                if (time.time() - last_epoch) > email_update_interval:
+                                        last_epoch = time.time()
+                                        print "[INFO] sending email..."
+                                        ret, jpeg = cv2.imencode('.jpg', vis)
+                                        frame = jpeg.tobytes()
+                                        sendEmail(frame)
+                                        print "[INFO] done!"
+                                if (time.time() - last_save_epoch) > save_update_interval:
+                                        last_save_epoch = time.time()
+                                        print "[INFO] saving hardcopy..."
+                                        timestamp = lt.now()
+                                        ts = timestamp.strftime("%Y-%m-%d-%H-%M-%S")
+                                        filename = "/home/pi/Pictures/"+ts+".jpeg"
+                                        cv2.imwrite(filename,vis)
+                                        print "[INFO] done!"
+                except:
+                        print "Error sending email: ", sys.exc_info()[0]
 
 @app.route('/')
 def index():
