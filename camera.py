@@ -13,7 +13,7 @@ class VideoCamera(object):
         self.avg = None
         self.avg_count = 0
         self.motionCounter = 0
-        self.status = "Unoccupied"
+        self.motion_frames = []
         self.x = 0
         self.y = 0
         self.w = 0
@@ -54,7 +54,6 @@ class VideoCamera(object):
         # draw the text and timestamp on the frame
         timestamp = self.lt.now()
         ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
-        cv2.putText(frame, "Area Status: {}".format(self.status), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         cv2.putText(frame, ts, (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,0.35, (0, 0, 255), 1)
         if self.w>0:
             cv2.rectangle(frame, (self.x, self.y), (self.x + self.w, self.y + self.h), (0, 255, 0), 2)
@@ -105,16 +104,16 @@ class VideoCamera(object):
             print("[INFO] found object!")
             # increment the motion counter
             self.motionCounter += 1
+            cv2.putText(frame, ts, (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,0.35, (0, 0, 255), 1)
+            self.motion_frames.append(frame)
 
             # check to see if the number of frames with consistent motion is
             # high enough
             if self.motionCounter >= self.conf["min_motion_frames"]:
                 print("[INFO] occupied!")
-                self.status = "Occupied"
                 self.motionCounter = 0
-                cv2.putText(frame, "Area Status: {}".format(self.status), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-                cv2.putText(frame, ts, (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,0.35, (0, 0, 255), 1)
-                ret, jpeg = cv2.imencode('.jpg', frame)
+                vis = np.concatenate(self.motion_frames,axis=0)
+                ret, jpeg = cv2.imencode('.jpg', vis)
                 return (jpeg.tobytes(), found_obj)
             
             return (None, False)
@@ -123,7 +122,7 @@ class VideoCamera(object):
         else:
             (self.x, self.y, self.w, self.h) = (0,0,0,0)
             self.motionCounter = 0
-            self.status = "Unoccupied"
+            self.motion_frames = []
             return (None, False)
 
 
