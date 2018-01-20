@@ -11,6 +11,7 @@ class VideoCamera(object):
         self.conf = json.load(open("conf.json"))
         self.lt = LocalTime("Baltimore")
         self.avg = None
+        self.avg_count = 0
         self.motionCounter = 0
         self.status = "Unoccupied"
         self.x = 0
@@ -72,6 +73,13 @@ class VideoCamera(object):
         if self.avg is None:
             print("[INFO] starting background model...")
             self.avg = gray.copy().astype("float")
+            self.avg_count += 1
+            return (None, False)
+        
+        if self.avg_count < 20:
+            print("[INFO] collecting additional frames for average...")
+            self.avg_count += 1
+            cv2.accumulateWeighted(gray,self.avg,0.5)
             return (None, False)
         
         cv2.accumulateWeighted(gray,self.avg,0.5)
