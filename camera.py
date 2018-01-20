@@ -56,7 +56,7 @@ class VideoCamera(object):
         timestamp = self.lt.now()
         ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
         cv2.putText(frame, ts, (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,0.35, (0, 0, 255), 1)
-        cv2.putText(frame, "FPS: {}; Contour area: {}".format(framerate,self.contour_area), (10, 20),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        cv2.putText(frame, "Motion on: {}; FPS: {}; Contour area: {}".format(self.avg_count == self.conf["camera_adjustment_frames"],framerate,self.contour_area), (10, 20),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         if self.w>0:
             cv2.rectangle(frame, (self.x, self.y), (self.x + self.w, self.y + self.h), (0, 255, 0), 2)
         ret, jpeg = cv2.imencode('.jpg', frame)
@@ -92,8 +92,9 @@ class VideoCamera(object):
         # loop over the contours
         for c in cnts:
             # if the contour is too small, ignore it
-            self.contour_area = cv2.contourArea(c)
-            if cv2.contourArea(c) < self.conf["min_area"]:
+            ca = cv2.contourArea(c)
+            self.contour_area = ca
+            if ca < self.conf["min_area"]:
                 continue
 
             # compute the bounding box for the contour, draw it on the frame,
@@ -123,6 +124,7 @@ class VideoCamera(object):
         # otherwise, the room is not occupied
         else:
             (self.x, self.y, self.w, self.h) = (0,0,0,0)
+            self.contour_area = 0
             self.motionCounter = 0
             self.motion_frames = []
             return (None, False)
