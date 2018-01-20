@@ -22,7 +22,7 @@ fromEmailPassword = 'password'
 toEmail = 'email2@gmail.com'
 
 def sendEmail(image):
-	msgRoot = MIMEMultipart('alternative')
+	msgRoot = MIMEMultipart()
 	timestamp = lt.now()
 	ts = timestamp.strftime("%Y-%m-%d_%H-%M")
 	msgRoot['Subject'] = 'Security Update '+ts
