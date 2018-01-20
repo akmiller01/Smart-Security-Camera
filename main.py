@@ -26,8 +26,7 @@ camera_settings = {
         }
 }
 lt = LocalTime('Baltimore')
-current_state = 'night'
-#current_state = lt.current_state()
+current_state = lt.current_state()
 camera_mode = camera_settings[current_state]
 video_camera = VideoCamera(resolution=(640,480),framerate=camera_mode["fr"]) # creates a camera object, flip vertically
 video_camera.shutter_speed(camera_mode["speed"])
@@ -62,13 +61,7 @@ def check_for_objects():
         global wait_timer
         while True:
                 #Add time checker in this thread
-                if wait_timer < 60:
-                        future_state = 'night'
-                        wait_timer += 1
-                        print(wait_timer)
-                else:
-                        future_state = 'day'
-                #future_state = lt.current_state()
+                future_state = lt.current_state()
                 current_state = check_camera_mode(video_camera,current_state, future_state)
                 try:
                         vis, found_obj = video_camera.get_object()
@@ -78,7 +71,7 @@ def check_for_objects():
                                         print "[INFO] sending email..."
                                         ret, jpeg = cv2.imencode('.jpg', vis)
                                         frame = jpeg.tobytes()
-                                        #sendEmail(frame)
+                                        sendEmail(frame)
                                         print "[INFO] done!"
                                 if (time.time() - last_save_epoch) > save_update_interval:
                                         last_save_epoch = time.time()
@@ -86,7 +79,7 @@ def check_for_objects():
                                         timestamp = lt.now()
                                         ts = timestamp.strftime("%Y-%m-%d-%H-%M-%S")
                                         filename = "/home/pi/Pictures/"+ts+".jpeg"
-                                        #cv2.imwrite(filename,vis)
+                                        cv2.imwrite(filename,vis)
                                         print "[INFO] done!"
                 except:
                         print "Error sending email: ", sys.exc_info()[0]
