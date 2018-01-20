@@ -72,9 +72,10 @@ class VideoCamera(object):
         gray = cv2.GaussianBlur(gray,(21,21),0)
         
         if self.avg is None or self.avg_count < self.conf["camera_adjustment_frames"]:
-            print("[INFO] waiting for camera warm up in %s..." % self.avg_count)
             self.avg = gray.copy().astype("float")
             self.avg_count += 1
+            if self.avg_count == self.conf["camera_adjustment_frames"]:
+                print("[INFO] motion detector live...")
             return (None, False)
         
         cv2.accumulateWeighted(gray,self.avg,0.5)
