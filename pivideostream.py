@@ -32,7 +32,7 @@ class PiVideoStream:
 			self.camera.shutter_speed = (1/self.camera.framerate)*1000000
 		
 	def start(self):
-		self.rawCapture = PiRGBArray(self.camera, size=resolution)
+		self.rawCapture = PiRGBArray(self.camera, size=self.camera.resolution)
 		self.stream = self.camera.capture_continuous(self.rawCapture,
 			format="bgr", use_video_port=True)
 
