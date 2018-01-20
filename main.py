@@ -7,7 +7,7 @@ import time
 import threading
 from localtime import LocalTime
 
-email_update_interval = 600 # sends an email only once in this time interval
+email_update_interval = 60 # sends an email only once in this time interval
 camera_settings = {
         "night":{
                 "fr":1,
