@@ -44,6 +44,7 @@ class VideoCamera(object):
         self.vs.shutter_speed(0)
         self.vs.start()
         time.sleep(self.conf["camera_warmup_time"])
+        self.avg_count = 0
 
     def __del__(self):
         self.vs.stop(stop_camera=True)
@@ -76,7 +77,7 @@ class VideoCamera(object):
             self.avg_count += 1
             return (None, False)
         
-        if self.avg_count < 20:
+        if self.avg_count < 30:
             print("[INFO] collecting additional frames for average...")
             self.avg_count += 1
             cv2.accumulateWeighted(gray,self.avg,0.5)
