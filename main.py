@@ -36,7 +36,6 @@ video_camera.iso(camera_mode["iso"])
 app = Flask(__name__)
 last_epoch = 0
 last_save_epoch = 0
-wait_timer = 0
 
 def set_camera_mode(camera,cm):
         camera.change_framerate(cm["fr"])
@@ -56,7 +55,6 @@ def check_for_objects():
         global last_save_epoch
         global current_state
         global video_camera
-        global wait_timer
         while True:
                 #Add time checker in this thread
                 future_state = lt.current_state()

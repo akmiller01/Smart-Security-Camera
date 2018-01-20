@@ -18,6 +18,7 @@ class VideoCamera(object):
         self.y = 0
         self.w = 0
         self.h = 0
+        self.contour_area = 0
         self.vs = PiVideoStream(resolution,framerate).start()
         time.sleep(self.conf["camera_warmup_time"])
         
@@ -55,7 +56,7 @@ class VideoCamera(object):
         timestamp = self.lt.now()
         ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
         cv2.putText(frame, ts, (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,0.35, (0, 0, 255), 1)
-        cv2.putText(frame, "FPS: {}".format(framerate), (10, 20),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        cv2.putText(frame, "FPS: {}; Contour area: {}".format(framerate,self.contour_area), (10, 20),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         if self.w>0:
             cv2.rectangle(frame, (self.x, self.y), (self.x + self.w, self.y + self.h), (0, 255, 0), 2)
         ret, jpeg = cv2.imencode('.jpg', frame)
@@ -91,6 +92,7 @@ class VideoCamera(object):
         # loop over the contours
         for c in cnts:
             # if the contour is too small, ignore it
+            self.contour_area = cv2.contourArea(c)
             if cv2.contourArea(c) < self.conf["min_area"]:
                 continue
 
