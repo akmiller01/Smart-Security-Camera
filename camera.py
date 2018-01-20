@@ -127,7 +127,6 @@ class VideoCamera(object):
         # otherwise, the room is not occupied
         else:
             (self.x, self.y, self.w, self.h) = (0,0,0,0)
-            print("[INFO] motion counter reset...")
             self.motionCounter = 0
             self.status = "Unoccupied"
             return (None, False)
