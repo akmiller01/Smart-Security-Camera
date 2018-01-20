@@ -39,7 +39,6 @@ class VideoCamera(object):
     def change_framerate(self,framerate=32):
         self.vs.stop(stop_camera=False)
         time.sleep(self.conf["camera_cooldown_time"])
-        self.t.stop()
         self.vs.camera.framerate = framerate
         self.vs.shutter_speed(0)
         self.vs.start()
