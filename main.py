@@ -63,7 +63,7 @@ def check_for_objects():
                         if found_obj==True and (time.time() - last_epoch) > email_update_interval:
                                 last_epoch = time.time()
                                 print "[INFO] Sending email..."
-                                #sendEmail(frame)
+                                sendEmail(frame)
                                 print "[INFO] done!"
                 except:
                         print "Error sending email: ", sys.exc_info()[0]
