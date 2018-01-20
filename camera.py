@@ -80,6 +80,7 @@ class VideoCamera(object):
             print("[INFO] collecting additional frames for average...")
             self.avg_count += 1
             cv2.accumulateWeighted(gray,self.avg,0.5)
+            frameDelta = cv2.absdiff(gray,cv2.convertScaleAbs(self.avg))
             return (None, False)
         
         cv2.accumulateWeighted(gray,self.avg,0.5)
