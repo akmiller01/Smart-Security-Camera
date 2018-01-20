@@ -7,7 +7,8 @@ import time
 import threading
 from localtime import LocalTime
 
-email_update_interval = 60 # sends an email only once in this time interval
+email_update_interval = 600 # sends an email only once in this time interval
+save_update_interval = 60 #Save once per minute
 camera_settings = {
         "night":{
                 "fr":1,
@@ -36,6 +37,7 @@ video_camera.iso(camera_mode["iso"])
 # App Globals (do not edit)
 app = Flask(__name__)
 last_epoch = 0
+last_save_epoch = 0
 
 def set_camera_mode(camera,cm):
         camera.change_framerate(cm["fr"])
@@ -52,6 +54,7 @@ def check_camera_mode(camera,current_state,future_state):
                 
 def check_for_objects():
         global last_epoch
+        global last_save_epoch
         global current_state
         global video_camera
         while True:
@@ -59,12 +62,23 @@ def check_for_objects():
                 future_state = lt.current_state()
                 current_state = check_camera_mode(video_camera,current_state, future_state)
                 try:
-                        frame, found_obj = video_camera.get_object()
-                        if found_obj==True and (time.time() - last_epoch) > email_update_interval:
-                                last_epoch = time.time()
-                                print "[INFO] Sending email..."
-                                sendEmail(frame)
-                                print "[INFO] done!"
+                        vis, found_obj = video_camera.get_object()
+                        if found_obj==True:
+                                if (time.time() - last_epoch) > email_update_interval:
+                                        last_epoch = time.time()
+                                        print "[INFO] sending email..."
+                                        ret, jpeg = cv2.imencode('.jpg', vis)
+                                        frame = jpeg.tobytes()
+                                        sendEmail(frame)
+                                        print "[INFO] done!"
+                                if (time.time() - last_save_epoch) > save_update_interval:
+                                        last_save_epoch = time.time()
+                                        print "[INFO] saving hardcopy..."
+                                        timestamp = lt.now()
+                                        ts = timestamp.strftime("%Y-%m-%d-%H-%M-%S")
+                                        filename = "~/Pictures/"+ts+".jpeg"
+                                        cv2.imwrite(filename,vis)
+                                        print "[INFO] done!"
                 except:
                         print "Error sending email: ", sys.exc_info()[0]
 

@@ -113,8 +113,7 @@ class VideoCamera(object):
                 print("[INFO] occupied!")
                 self.motionCounter = 0
                 vis = np.concatenate(self.motion_frames,axis=0)
-                ret, jpeg = cv2.imencode('.jpg', vis)
-                return (jpeg.tobytes(), found_obj)
+                return (vis, found_obj)
             
             return (None, False)
 
