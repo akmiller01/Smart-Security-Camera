@@ -64,8 +64,8 @@ def check_for_objects():
                 #Add time checker in this thread
                 if wait_timer < 60:
                         future_state = 'night'
-			wait_timer += 1
-			print(wait_timer)
+                        wait_timer += 1
+                        print(wait_timer)
                 else:
                         future_state = 'day'
                 #future_state = lt.current_state()

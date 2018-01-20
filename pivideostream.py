@@ -12,14 +12,6 @@ class PiVideoStream:
 		self.camera = PiCamera()
 		self.camera.resolution = resolution
 		self.camera.framerate = framerate
-		self.rawCapture = PiRGBArray(self.camera, size=resolution)
-		self.stream = self.camera.capture_continuous(self.rawCapture,
-			format="bgr", use_video_port=True)
-
-		# initialize the variable used to indicate
-		# if the thread should be stopped
-		self.stream_stopped = False
-		self.camera_stopped = False
 		
 	def hflip(self,hflip=True):
 		self.camera.hflip = hflip
@@ -40,6 +32,12 @@ class PiVideoStream:
 			self.camera.shutter_speed = (1/self.camera.framerate)*1000000
 		
 	def start(self):
+		self.rawCapture = PiRGBArray(self.camera, size=resolution)
+		self.stream = self.camera.capture_continuous(self.rawCapture,
+			format="bgr", use_video_port=True)
+
+		# initialize the variable used to indicate
+		# if the thread should be stopped
 		self.stream_stopped = False
 		self.camera_stopped = False
 		# start the thread to read frames from the video stream
