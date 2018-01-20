@@ -21,26 +21,17 @@ fromEmailPassword = 'password'
 toEmail = 'email2@gmail.com'
 
 def sendEmail(image):
-	msgRoot = MIMEMultipart('related')
+	msgRoot = MIMEMultipart()
 	timestamp = lt.now()
-	ts = timestamp.strftime("%Y-%m-%d %H:%M")
+	ts = timestamp.strftime("%Y-%m-%d_%H-%M")
 	msgRoot['Subject'] = 'Security Update '+ts
 	msgRoot['From'] = fromEmail
 	msgRoot['To'] = toEmail
 	msgRoot.preamble = 'Raspberry pi security camera update'
-
-	msgAlternative = MIMEMultipart('alternative')
-	msgRoot.attach(msgAlternative)
-	msgText = MIMEText('Smart security cam found object')
-	msgAlternative.attach(msgText)
-
-	msgText = MIMEText('<img src="cid:image1">', 'html')
-	msgAlternative.attach(msgText)
 	
-	msgText = MIMEText('<a href="{}:5000">Click here to live</a>'.format(u.externalipaddress()),'html')
+	msgText = MIMEText(u'<a href="{}:5000">Click here to view live</a>'.format(u.externalipaddress()),'html')
 	msgRoot.attach(msgText)
-	msgImage = MIMEImage(image)
-	msgImage.add_header('Content-ID', '<image1>')
+	msgImage = MIMEImage(image,name="Pi_footage_{}.jpeg".format(ts))
 	msgRoot.attach(msgImage)
 
 	smtp = smtplib.SMTP('smtp.gmail.com', 587)
