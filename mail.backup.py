@@ -2,7 +2,9 @@ import smtplib
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from email.MIMEImage import MIMEImage
+from localtime import LocalTime
 
+lt = LocalTime("Baltimore")
 # Email you want to send the update from (only works with gmail)
 fromEmail = 'email@gmail.com'
 # You can generate an app password here to avoid storing your password in plain text
@@ -14,7 +16,9 @@ toEmail = 'email2@gmail.com'
 
 def sendEmail(image):
 	msgRoot = MIMEMultipart('related')
-	msgRoot['Subject'] = 'Security Update'
+	timestamp = lt.now()
+	ts = timestamp.strftime("%Y-%m-%d %H:%M")
+	msgRoot['Subject'] = 'Security Update '+ts
 	msgRoot['From'] = fromEmail
 	msgRoot['To'] = toEmail
 	msgRoot.preamble = 'Raspberry pi security camera update'
