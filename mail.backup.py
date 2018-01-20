@@ -10,7 +10,8 @@ u = miniupnpc.UPnP()
 u.discoverdelay = 200;
 u.discover()
 u.selectigd()
-print 'external ip address:', u.externalipaddress()
+exip = u.externalipaddress()
+print 'external ip address:', exip
 # Email you want to send the update from (only works with gmail)
 fromEmail = 'email@gmail.com'
 # You can generate an app password here to avoid storing your password in plain text
@@ -21,7 +22,7 @@ fromEmailPassword = 'password'
 toEmail = 'email2@gmail.com'
 
 def sendEmail(image):
-	msgRoot = MIMEMultipart()
+	msgRoot = MIMEMultipart('alternative')
 	timestamp = lt.now()
 	ts = timestamp.strftime("%Y-%m-%d_%H-%M")
 	msgRoot['Subject'] = 'Security Update '+ts
@@ -29,8 +30,21 @@ def sendEmail(image):
 	msgRoot['To'] = toEmail
 	msgRoot.preamble = 'Raspberry pi security camera update'
 	
-	msgText = MIMEText(u'<a href="{}:5000">Click here to view live</a>'.format(u.externalipaddress()),'html')
-	msgRoot.attach(msgText)
+	plain_text_message = "Link to view live: http://{}:5000".format(exip)
+	html_message = """\
+	<html>
+	  <head></head>
+	  <body>
+	    <p>
+	       <a href="http://{}:5000">Click here to view live</a>
+	    </p>
+	  </body>
+	</html>
+	""".format(exip)
+	part1 = MIMEText(plain_text_message,'plain')
+	part2 = MIMEText(html_message,'html')
+	msgRoot.attach(part1)
+	msgRoot.attach(part2)
 	msgImage = MIMEImage(image,name="Pi_footage_{}.jpeg".format(ts))
 	msgRoot.attach(msgImage)
 
