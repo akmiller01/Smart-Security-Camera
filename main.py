@@ -76,8 +76,8 @@ def check_for_objects():
                                         print "[INFO] saving hardcopy..."
                                         timestamp = lt.now()
                                         ts = timestamp.strftime("%Y-%m-%d-%H-%M-%S")
-                                        filename = "~/Pictures/"+ts+".jpeg"
-                                        cv2.imwrite(filename,vis)
+                                        filename = "/home/pi/Pictures/"+ts+".jpeg"
+                                        cv2.imwrite(vis,filename)
                                         print "[INFO] done!"
                 except:
                         print "Error sending email: ", sys.exc_info()[0]
