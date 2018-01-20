@@ -79,6 +79,7 @@ class VideoCamera(object):
         
         if self.avg_count < 30:
             self.avg_count += 1
+            print(self.avg_count)
             cv2.accumulateWeighted(gray,self.avg,0.5)
             frameDelta = cv2.absdiff(gray,cv2.convertScaleAbs(self.avg))
             return (None, False)
