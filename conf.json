@@ -1,6 +1,7 @@
 {
     "camera_warmup_time": 2.5,
     "camera_cooldown_time": 1.0,
+    "camera_adjustment_frames":60,
     "min_motion_frames": 4,
     "delta_thresh": 5,
     "min_area": 5000

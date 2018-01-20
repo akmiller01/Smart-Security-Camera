@@ -71,8 +71,8 @@ class VideoCamera(object):
         gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray,(21,21),0)
         
-        if self.avg is None or self.avg_count < 30:
-            print("[INFO] starting background model...")
+        if self.avg is None or self.avg_count < self.conf["camera_adjustment_frames"]:
+            print("[INFO] waiting for camera warm up in %s..." % self.avg_count)
             self.avg = gray.copy().astype("float")
             self.avg_count += 1
             return (None, False)
