@@ -34,9 +34,11 @@ def sendEmail(image):
 	msgText = MIMEText('Smart security cam found object')
 	msgAlternative.attach(msgText)
 
-	msgText = MIMEText('<a href="{}:5000">Click here to live</a><img src="cid:image1">'.format(u.externalipaddress()), 'html')
+	msgText = MIMEText('<img src="cid:image1">', 'html')
 	msgAlternative.attach(msgText)
-
+	
+	msgText = MIMEText('<a href="{}:5000">Click here to live</a>'.format(u.externalipaddress()),'html')
+	msgRoot.attach(msgText)
 	msgImage = MIMEImage(image)
 	msgImage.add_header('Content-ID', '<image1>')
 	msgRoot.attach(msgImage)
