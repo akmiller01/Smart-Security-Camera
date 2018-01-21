@@ -78,10 +78,10 @@ def check_for_objects():
                                 ts = timestamp.strftime("%Y-%m-%d-%H-%M-%S")
                                 filename = "/home/pi/Pictures/"+ts+".jpeg"
                                 try:
-					cv2.imwrite(filename,vis)
-					print "[INFO] done!"
-				except:
-					print "Error saving hardcopy: ", sys.exc_info()[0]
+                                        cv2.imwrite(filename,vis)
+                                        print "[INFO] done!"
+                                except:
+                                        print "Error saving hardcopy: ", sys.exc_info()[0]
                 
 @app.route('/')
 def index():
