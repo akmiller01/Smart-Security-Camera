@@ -28,6 +28,9 @@ class VideoCamera(object):
     def vflip(self,vflip=True):
         self.vs.vflip(vflip)
         
+    def rotation(self,angle=0):
+        self.vs.rotation(angle)
+        
     def exposure_mode(self,exposure_mode="auto"):
         self.vs.exposure_mode(exposure_mode)
 

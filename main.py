@@ -11,8 +11,8 @@ email_update_interval = 600 # sends an email only once in this time interval
 save_update_interval = 30 #Save once per half minute
 camera_settings = {
         "night":{
-                "fr":1,
-                "speed":1000000,
+                "fr":2,
+                "speed":500000,
                 "ex":"night",
                 "iso":800
         },
@@ -30,6 +30,7 @@ video_camera = VideoCamera(resolution=(640,480),framerate=camera_mode["fr"]) # c
 video_camera.shutter_speed(camera_mode["speed"])
 video_camera.hflip()
 video_camera.vflip()
+video_camera.rotation(270)
 video_camera.iso(camera_mode["iso"])
 
 # App Globals (do not edit)
