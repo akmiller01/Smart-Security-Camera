@@ -20,7 +20,7 @@ class PiVideoStream:
 		self.camera.vflip = vflip
 		
 	def rotation(self,angle=0):
-		self.camera.rotation(angle)
+		self.camera.rotation = angle
 		
 	def exposure_mode(self,exposure_mode="auto"):
 		self.camera.exposure_mode = exposure_mode
