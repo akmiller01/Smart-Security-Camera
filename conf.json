@@ -4,5 +4,5 @@
     "camera_adjustment_frames":45,
     "min_motion_frames": 8,
     "delta_thresh": 5,
-    "min_area": 5000
+    "min_area": 4000
 }
