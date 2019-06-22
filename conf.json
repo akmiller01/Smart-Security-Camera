@@ -5,5 +5,5 @@
     "min_motion_frames": 8,
     "delta_thresh": 5,
     "min_area": 4000,
-    "max_area": 50000
+    "max_area": 30000
 }
