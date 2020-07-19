@@ -69,6 +69,9 @@ def check_for_objects():
         global video_camera
         while True:
                 #Add time checker in this thread
+                a = Astral()
+                a.solar_depression="civil"
+                city = a[city_name]
                 current_time = est.localize(datetime.now())
                 sun = city.sun(date=current_time.date())
                 future_state = 'day' if (sun['dawn'] < current_time < sun['dusk']) else 'night'
