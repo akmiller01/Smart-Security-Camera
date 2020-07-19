@@ -108,7 +108,7 @@ class VideoCamera(object):
 
         # check to see if the room is occupied
         if found_obj:
-            print("[INFO] found object!")
+            # print("[INFO] found object!")
             # increment the motion counter
             self.motionCounter += 1
             cv2.putText(frame, ts, (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,0.35, (0, 0, 255), 1)

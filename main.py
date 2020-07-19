@@ -5,7 +5,10 @@ from flask import Flask, render_template, Response
 from camera import VideoCamera
 import time
 import threading
-from localtime import LocalTime
+from astral import Astral
+from datetime import datetime
+from pytz import timezone
+
 
 email_update_interval = 600 # sends an email only once in this time interval
 save_update_interval = 30 #Save once per half minute
@@ -23,8 +26,16 @@ camera_settings = {
                 "iso":0
         }
 }
-lt = LocalTime('Baltimore')
-current_state = lt.current_state()
+
+
+est = timezone("US/Eastern")
+city_name = "Baltimore"
+a = Astral()
+a.solar_depression="civil"
+city = a[city_name]
+current_time = est.localize(datetime.now())
+sun = city.sun(date=current_time.date())
+current_state = 'day' if (sun['dawn'] < current_time < sun['dusk']) else 'night'
 camera_mode = camera_settings[current_state]
 video_camera = VideoCamera(resolution=(640,480),framerate=camera_mode["fr"]) # creates a camera object, flip vertically
 video_camera.shutter_speed(camera_mode["speed"])
@@ -58,7 +69,9 @@ def check_for_objects():
         global video_camera
         while True:
                 #Add time checker in this thread
-                future_state = lt.current_state()
+                current_time = est.localize(datetime.now())
+                sun = city.sun(date=current_time.date())
+                future_state = 'day' if (sun['dawn'] < current_time < sun['dusk']) else 'night'
                 current_state = check_camera_mode(video_camera,current_state, future_state)
                 vis, found_obj = video_camera.get_object()
                 if found_obj==True:

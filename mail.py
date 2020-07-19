@@ -3,16 +3,22 @@ from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from email.MIMEImage import MIMEImage
 from localtime import LocalTime
-import miniupnpc
+# import miniupnpc
 import json
+import requests
 
 conf = json.load(open("mail_conf.json"))
 lt = LocalTime("Baltimore")
-u = miniupnpc.UPnP()
-u.discoverdelay = 200;
-u.discover()
-u.selectigd()
-exip = u.externalipaddress()
+# u = miniupnpc.UPnP()
+# u.discoverdelay = 200;
+# u.discover()
+# u.selectigd()
+# exip = u.externalipaddress()
+try:
+    exip = requests.get('https://checkip.amazonaws.com').text.strip()
+except requests.exceptions.ConnectionError:
+    exip = "0.0.0.0"
+
 print 'external ip address:', exip
 # Email you want to send the update from (only works with gmail)
 fromEmail = conf["email1"]
