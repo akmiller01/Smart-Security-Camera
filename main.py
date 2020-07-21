@@ -61,7 +61,7 @@ def check_camera_mode(camera,current_state,future_state):
                 camera_mode = camera_settings[current_state]
                 set_camera_mode(camera,camera_mode)
         return current_state
-                
+
 def check_for_objects():
         global last_epoch
         global last_save_epoch
@@ -91,15 +91,14 @@ def check_for_objects():
                         if (time.time() - last_save_epoch) > save_update_interval:
                                 last_save_epoch = time.time()
                                 print "[INFO] saving hardcopy..."
-                                timestamp = lt.now()
-                                ts = timestamp.strftime("%Y-%m-%d-%H-%M-%S")
+                                ts = current_time.strftime("%Y-%m-%d-%H-%M-%S")
                                 filename = "/home/pi/Pictures/"+ts+".jpeg"
                                 try:
                                         cv2.imwrite(filename,vis)
                                         print "[INFO] done!"
                                 except:
                                         print "Error saving hardcopy: ", sys.exc_info()[0]
-                
+
 @app.route('/')
 def index():
     return render_template('index.html')
